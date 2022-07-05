@@ -2,12 +2,15 @@ import React, {useState} from 'react';
 import './App.css';
 import {v1} from "uuid";
 import {Header} from "./Site/Header";
-import { Body } from './Site/Body';
+import {Body} from './Site/Body';
 import {Footer} from "./Site/Footer";
 import {Students} from "./Component/Students";
 import {TopCars, TopCarsType} from "./Component/TopCars";
-import {Button} from "./Component/Button";
+import {Button, Money, MoneyType} from "./Component/Button";
+import {FullInput, InputType} from "./Component/FullInput";
 
+
+type nameBanknote = 'all' | 'Dollars' | 'RUBLES'
 
 const App = () => {
     //Данные храним в App
@@ -24,15 +27,22 @@ const App = () => {
         {manufacturer: 'Mercedes', model: 'e63s'},
         {manufacturer: 'Audi', model: 'rs6'}
     ]
-
     //input and button
-    const message = [
+    const [messages, setMessage] = useState<Array<InputType>>([
         {id: v1(), message: 'message1'},
         {id: v1(), message: 'message2'},
         {id: v1(), message: 'message3'},
-    ]
+    ])
 
-    const [money, setMoney] = useState([
+    const addMessage = (messageId: string) => {
+        let newMessage = {
+            id: v1(),
+            message: messageId
+        }
+        setMessage([newMessage, ...messages])
+    }
+
+    const moneys: Array<MoneyType> = [
         {banknotes: 'Dollars', value: 100, number: ' a1234567890'},
         {banknotes: 'Dollars', value: 50, number: ' z1234567890'},
         {banknotes: 'RUBLES', value: 100, number: ' w1234567890'},
@@ -41,20 +51,19 @@ const App = () => {
         {banknotes: 'RUBLES', value: 100, number: ' r1234567890'},
         {banknotes: 'Dollars', value: 50, number: ' x1234567890'},
         {banknotes: 'RUBLES', value: 50, number: ' v1234567890'},
-    ])
-
-    const showAllBanknotes = () => {
-        console.log('All Banknotes')
+    ]
+    const [filter, setFilter] = useState<nameBanknote>('all')
+    const showAllBanknotes = (name: nameBanknote) => {
+        setFilter(name)
     }
-    const showOnlyDollars = () => {
-        console.log('only dollars')
-    }
-    const showOnlyRubles = () => {
-        console.log('only rubles')
+    let filteredMoney = moneys
+    if (filter === 'Dollars') {
+        filteredMoney = moneys.filter(m => m.banknotes === 'Dollars')
+    } else if (filter === 'RUBLES') {
+        filteredMoney = moneys.filter(m => m.banknotes === 'RUBLES')
     }
 
     let [num, setNum] = useState(1)
-
     const onClickHandler = () => {
         setNum(++num)
         console.log(num)
@@ -70,18 +79,17 @@ const App = () => {
             <Footer titleFooter={'This is a Footer'}/>
             <Students students={students}/>
             <TopCars cars={topCars}/>
-            <Button
-                nameButton={'first button'}
-                callback={showAllBanknotes}
+
+            <Money money={filteredMoney}/>
+            <Button nameButton={'first button'} callback={()=>showAllBanknotes('all')}/>
+            <Button nameButton={'second button'} callback={()=>showAllBanknotes('Dollars')}/>
+            <Button nameButton={'third button'} callback={()=>showAllBanknotes('RUBLES')}/>
+
+            <FullInput
+                input={messages}
+                addMessage={addMessage}
             />
-            <Button
-                nameButton={'second button'}
-                callback={showOnlyDollars}
-            />
-            <Button
-                nameButton={'third button'}
-                callback={showOnlyRubles}
-            />
+
             <h3>{num}</h3>
             <button onClick={onClickHandler}>button ++</button>
             <button onClick={onClickresetHandler}>reset</button>
