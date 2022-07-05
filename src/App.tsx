@@ -8,6 +8,8 @@ import {Students} from "./Component/Students";
 import {TopCars, TopCarsType} from "./Component/TopCars";
 import {Button, Money, MoneyType} from "./Component/Button";
 import {FullInput, InputType} from "./Component/FullInput";
+import {ButtonForInput} from "./Component/ButtonForInput";
+import {Input} from "./Component/Input";
 
 
 type nameBanknote = 'all' | 'Dollars' | 'RUBLES'
@@ -33,6 +35,7 @@ const App = () => {
         {id: v1(), message: 'message2'},
         {id: v1(), message: 'message3'},
     ])
+    const [title, setTitle] = useState('')
 
     const addMessage = (messageId: string) => {
         let newMessage = {
@@ -40,6 +43,12 @@ const App = () => {
             message: messageId
         }
         setMessage([newMessage, ...messages])
+        setTitle('')
+    }
+
+    const addMessageButtonHandler = () => {
+        addMessage(title)
+        setTitle('')
     }
 
     const moneys: Array<MoneyType> = [
@@ -85,9 +94,18 @@ const App = () => {
             <Button nameButton={'second button'} callback={()=>showAllBanknotes('Dollars')}/>
             <Button nameButton={'third button'} callback={()=>showAllBanknotes('RUBLES')}/>
 
-            <FullInput
+            {/*<FullInput*/}
+            {/*    input={messages}*/}
+            {/*    addMessage={addMessage}*/}
+            {/*/>*/}
+            <Input
+                title={title}
+                setTitle={setTitle}
+            />
+            <ButtonForInput
+                name={'+'}
                 input={messages}
-                addMessage={addMessage}
+                callBack={addMessageButtonHandler}
             />
 
             <h3>{num}</h3>
